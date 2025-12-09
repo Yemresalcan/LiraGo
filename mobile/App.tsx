@@ -5,6 +5,7 @@ import { AuthProvider } from './src/contexts/AuthContext';
 import { ReceiptProvider } from './src/contexts/ReceiptContext';
 import { ThemeProvider } from './src/contexts/ThemeContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import ErrorBoundary from './src/components/ErrorBoundary';
 import './src/i18n/index';
 
 export default function App() {
@@ -30,12 +31,14 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <ReceiptProvider>
-          <RootNavigator />
-        </ReceiptProvider>
-      </ThemeProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ThemeProvider>
+          <ReceiptProvider>
+            <RootNavigator />
+          </ReceiptProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

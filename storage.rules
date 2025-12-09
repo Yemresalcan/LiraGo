@@ -1,0 +1,54 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ============ HELPER FUNCTIONS ============
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Validate file size (max 10MB)
+    function isValidFileSize() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // Validate content type
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // ============ RECEIPTS STORAGE ============
+    match /receipts/{userId}/{allPaths=**} {
+      // Users can read their own receipt images
+      allow read: if isOwner(userId);
+      
+      // Users can upload images for their own receipts
+      allow write: if isOwner(userId) && isValidFileSize() && isImage();
+      
+      // Users can delete their own images
+      allow delete: if isOwner(userId);
+    }
+    
+    // ============ PROFILE IMAGES ============
+    match /profiles/{userId}/{allPaths=**} {
+      // Profile images are publicly readable
+      allow read: if true;
+      
+      // Only owner can upload/update their profile image
+      allow write: if isOwner(userId) && isValidFileSize() && isImage();
+      
+      // Only owner can delete their profile image
+      allow delete: if isOwner(userId);
+    }
+    
+    // ============ CATCH-ALL RULE ============
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

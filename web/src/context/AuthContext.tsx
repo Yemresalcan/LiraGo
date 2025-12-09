@@ -3,10 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Admin credentials - In production, this should be stored securely
-const ADMIN_USERNAME = 'AdMiN';
-const ADMIN_PASSWORD = 'kartalyuvasıYes?';
-
 interface AdminUser {
   username: string;
   displayName: string;
@@ -55,11 +51,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [router]);
 
   const signIn = async (username: string, password: string) => {
-    // Validate credentials
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    try {
+      // Validate credentials via server-side API
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Invalid username or password');
+      }
+
+      const data = await response.json();
       const adminUser: AdminUser = {
-        username: ADMIN_USERNAME,
-        displayName: 'Admin',
+        username: data.username,
+        displayName: data.displayName || 'Admin',
         role: 'admin'
       };
       
@@ -67,8 +77,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.setItem('adminUser', JSON.stringify(adminUser));
       setUser(adminUser);
       router.push('/');
-    } else {
-      throw new Error('Invalid username or password');
+    } catch (error) {
+      throw error;
     }
   };
 

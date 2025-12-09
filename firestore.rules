@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============ HELPER FUNCTIONS ============
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // ============ USERS COLLECTION ============
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Users can create their own profile
+      allow create: if isOwner(userId) && 
+        hasRequiredFields(['email', 'createdAt']) &&
+        request.resource.data.role == 'user';  // Prevent self-promotion to admin
+      
+      // Users can update their own profile (but not role)
+      allow update: if isOwner(userId) && 
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']));
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // ============ RECEIPTS COLLECTION ============
+    match /receipts/{receiptId} {
+      // Users can only read their own receipts
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      
+      // Users can create receipts for themselves
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        hasRequiredFields(['userId', 'title', 'amount', 'currency', 'category', 'createdAt']);
+      
+      // Users can update their own receipts
+      allow update: if isOwner(resource.data.userId);
+      
+      // Users can delete their own receipts
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    // ============ BILL COLLECTIONS ============
+    // Generic rule for all bill types
+    function canAccessBill(billData) {
+      return isOwner(billData.userId) || isAdmin();
+    }
+    
+    function canCreateBill() {
+      return isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        hasRequiredFields(['userId', 'type', 'cost', 'createdAt']);
+    }
+    
+    match /electricity_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /water_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /gas_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /naturalGas_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /internet_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /other_bills/{billId} {
+      allow read: if canAccessBill(resource.data);
+      allow create: if canCreateBill();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    // ============ RATE LIMITING (Optional - for 10K users) ============
+    // Note: Firestore doesn't have built-in rate limiting
+    // Consider implementing with Cloud Functions if needed
+    
+    // ============ CATCH-ALL RULE ============
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@bi-lira/shared",
+  "version": "1.0.0",
+  "description": "Shared types, constants, and utilities for Bi-Lira applications",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
