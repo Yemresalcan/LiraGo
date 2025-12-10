@@ -15,7 +15,17 @@
     "date": "Last Payment Date",
     "usage": "Usage",
     "items": "Items",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "data": "Data",
+    "noData": "No data yet",  
+    "deleteConfirmation":"Are you sure you want to delete this receipt?",
+    "receiptDeleted":"Receipt deleted successfully",
+    "receiptAdded":"Receipt added successfully",
+    "receiptUpdated":"Receipt updated successfully",
+    "searchPlaceholder":"Search receipts...",
+    "offline":"Offline",
+    "updatedSuccessfully": "Updated successfully",
+    "deletedSuccessfully": "Deleted successfully"
   },
   "auth": {
     "login": "Login",
@@ -140,7 +150,17 @@
     "version": "Version",
     "build": "Build",
     "signOut": "Sign Out",
-    "signOutConfirm": "Are you sure you want to sign out?"
+    "signOutConfirm": "Are you sure you want to sign out?",
+    "billReminders": "Bill Reminders",
+    "enableReminders": "Enable Reminders",
+    "reminderDescription": "Get notified before due dates",
+    "reminderTime": "Reminder Time",
+    "reminderDays": "Reminder Days",
+    "oneDayBefore": "1 Day Before",
+    "threeDaysBefore": "3 Days Before",
+    "sevenDaysBefore": "7 Days Before",
+    "permissionRequired": "Permission Required",
+    "notificationPermissionMessage": "Please enable notifications in your device settings to receive bill reminders."
   },
   "profile": {
     "title": "Profile",

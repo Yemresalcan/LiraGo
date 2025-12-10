@@ -16,7 +16,16 @@
     "date": "Son Kullanım Tarihi",
     "usage": "Tüketim",
     "items": "Ürünler",
-    "unknown": "Bilinmeyen"
+    "unknown": "Bilinmeyen",
+    "noData":"Veri yok",
+    "deleteConfirmation":"Bu fişi silmek istediğinizden emin misiniz?",
+    "receiptDeleted":"Fiş başarıyla silindi",
+    "receiptAdded":"Fiş başarıyla eklendi",
+    "receiptUpdated":"Fiş başarıyla güncellendi",
+    "searchPlaceholder":"Fişlerde ara...",
+    "offline":"Çevrimdışı",
+    "updatedSuccessfully": "Güncelleme başarılı oldu",
+    "deletedSuccessfully": "Silme başarılı oldu"
   },
 
   "auth": {
@@ -142,7 +151,17 @@
     "version": "Sürüm",
     "build": "Yapı",
     "signOut": "Çıkış Yap",
-    "signOutConfirm": "Çıkış yapmak istediğinizden emin misiniz?"
+    "signOutConfirm": "Çıkış yapmak istediğinizden emin misiniz?",
+    "billReminders": "Fatura Hatırlatıcıları",
+    "enableReminders": "Hatırlatıcıları Etkinleştir",
+    "reminderDescription": "Son ödeme tarihinden önce bildirim al",
+    "reminderTime": "Hatırlatma Saati",
+    "reminderDays": "Hatırlatma Günleri",
+    "oneDayBefore": "1 Gün Önce",
+    "threeDaysBefore": "3 Gün Önce",
+    "sevenDaysBefore": "7 Gün Önce",
+    "permissionRequired": "İzin Gerekli",
+    "notificationPermissionMessage": "Fatura hatırlatıcıları almak için lütfen cihaz ayarlarından bildirimleri etkinleştirin."
   },
   "profile": {
     "title": "Profil",

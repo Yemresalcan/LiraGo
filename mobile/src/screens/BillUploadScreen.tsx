@@ -20,6 +20,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { extractTextFromImage, detectBillType, extractBillData } from '../services/ocrService';
 import { db } from '../services/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { scheduleBillReminder, getReminderSettings } from '../services/billReminderService';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import TabNavigator from '../navigation/TabNavigator';
@@ -220,7 +221,28 @@ const BillUploadScreen = () => {
                 createdAt: Timestamp.now(),
             };
 
-            await addDoc(collection(db, collectionName), billData);
+            const docRef = await addDoc(collection(db, collectionName), billData);
+
+            // Schedule bill payment reminders if the due date is in the future
+            const now = new Date();
+            if (date! > now) {
+                try {
+                    const settings = await getReminderSettings();
+                    if (settings.enabled) {
+                        await scheduleBillReminder(
+                            docRef.id,
+                            billType,
+                            date!,
+                            parseFloat(cost) || 0,
+                            merchant || undefined
+                        );
+                        console.log('Bill reminders scheduled successfully');
+                    }
+                } catch (reminderError) {
+                    console.error('Failed to schedule reminders:', reminderError);
+                    // Don't fail the whole operation if reminder scheduling fails
+                }
+            }
 
             showAlert(t('billUpload.success'), t('billUpload.saved'), 'success');
             navigation.goBack();
