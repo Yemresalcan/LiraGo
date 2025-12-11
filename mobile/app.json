@@ -7,27 +7,30 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#6366f1"
+      "backgroundColor": "#40E0D0"
     },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take photos of receipts.",
         "NSPhotoLibraryUsageDescription": "This app accesses your photo library to select receipt images."
-      }
+      },
+      "bundleIdentifier": "com.lirago.app"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#6366f1"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#40E0D0"
       },
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_MEDIA_IMAGES"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.lirago.app"
     },
@@ -40,17 +43,22 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
-          "color": "#6366f1"
+          "icon": "./assets/notification-icon.png",
+          "color": "#40E0D0"
         }
       ],
       "expo-font"
     ],
     "notification": {
-      "icon": "./assets/icon.png",
-      "color": "#6366f1",
+      "icon": "./assets/notification-icon.png",
+      "color": "#40E0D0",
       "androidMode": "default",
       "androidCollapsedTitle": "#{unread_notifications} new notifications"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b73e3c41-bff1-4b7d-8109-ac427c03f70e"
+      }
     }
   }
 }
